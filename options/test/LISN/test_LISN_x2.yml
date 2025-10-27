@@ -1,0 +1,88 @@
+name: lisn_SRx2
+model_type: SRModel
+scale: 2
+num_gpu: 1  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+datasets:
+  test_1:
+    name: results-A #Set5
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/results-A/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/results-A/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+  
+  test_2:
+    name: results-C #Set5
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/results-C/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/results-C/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+  
+  test_3:
+    name: test20
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test20/M3FD_Fusion_test20/lr/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test20/M3FD_Fusion_test20/lr/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+  test_4:
+    name: test15
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test15/M3FD_Fusion_test15/lr/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test15/M3FD_Fusion_test15/lr/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+  test_5:
+    name: ir100
+    type: SingleTestImageDataset
+    dataroot_gt: /home/sshan/project/experiment/data/IR100
+    dataroot_lq: null
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+# network structures
+network_g: 
+    type: LISNModel
+    img_size: 64
+    num_heads: 8
+    upscale: 2
+    window_size: 8
+    num_in_ch: 3
+    nf: 64
+    embed_dim: 64
+    depth: 6
+    upsampler: "pixelshuffledirect"         #// "pixelshuffle" | "convtranspose" | "upconv"
+    img_range: 1.
+
+# path
+path:
+  pretrain_network_g: /home/sshan/project/experiment/DCKD/experiments/final_models/LISN_SRx2_M3FD_250k_B16G4/models/net_g_latest.pth
+  strict_load_g: true
+  param_key_g: params_ema
+
+val:
+  save_img: true
+  suffix: ~  # add suffix to saved images
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 2
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 2
+      test_y_channel: false
+
+video:
+  path: /mnt/vc-nfs/drone_hanwa_230907/DJI_0086.mp4

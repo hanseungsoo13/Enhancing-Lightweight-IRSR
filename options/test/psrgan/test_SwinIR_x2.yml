@@ -1,0 +1,85 @@
+name: PSRGAN_DCKD_SRx2
+model_type: GANModel
+scale: 2
+num_gpu: 1  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+datasets:
+  test_1:
+    name: results-A #Set5
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/results-A/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/results-A/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+  
+  test_2:
+    name: results-C #Set5
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/results-C/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/results-C/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+  
+  test_3:
+    name: test20
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test20/M3FD_Fusion_test20/lr/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test20/M3FD_Fusion_test20/lr/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+  test_4:
+    name: test15
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test15/M3FD_Fusion_test15/lr/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test15/M3FD_Fusion_test15/lr/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+  test_5:
+    name: ir100
+    type: SingleTestImageDataset
+    dataroot_gt: /home/sshan/project/experiment/data/IR100
+    dataroot_lq: null
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+
+# network structures
+network_g:
+  type: D_msrresnet0
+  in_nc: 3        # input channel number
+  out_nc: 3       #// ouput channel number
+  nc: 64          #// 96 for DPSR, 128 for SRMD, 64 for DnCNN and MSRResNet
+  nb: 16          #// 12 for "srmd", 15 for "ffdnet", 20 for "dncnn", 16 for "srresnet" and "dpsr"
+  upscale: 2
+  act_mode: "R"   #// "BR" for BN+ReLU | "R" for ReLU
+  conv_act_mode: "R"
+  upsample_mode: "pixelshuffle"         #// "pixelshuffle" | "convtranspose" | "upconv"
+
+
+# path
+path:
+  pretrain_network_g: /home/sshan/project/experiment/DCKD/experiments/best_models/psrgan_net_g_50000_x2.pth
+  strict_load_g: true
+  param_key_g: params_ema
+
+val:
+  save_img: true
+  suffix: ~  # add suffix to saved images
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 2
+      test_y_channel: true
+    ssim:
+      type: calculate_ssim
+      crop_border: 2
+      test_y_channel: true

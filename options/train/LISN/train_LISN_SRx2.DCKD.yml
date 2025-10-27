@@ -1,0 +1,178 @@
+# general settings
+name: lisn_SRx2_M3FD_250k
+model_type: SRModel
+scale: 2
+num_gpu: 2
+manual_seed: 3407
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: M3FD
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/M3FD/train/M3FD_Fusion_train/lr/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/M3FD/train/M3FD_Fusion_train/lr/LR_bicubic/X2
+    meta_info_file: ~
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+    gt_size: 256
+    use_hflip: true
+    use_rot: true
+
+    # data loader
+    num_worker_per_gpu: 16
+    batch_size_per_gpu: 4
+    dataset_enlarge_ratio: 10
+    prefetch_mode: ~
+
+  val_1:
+    name: M3FD
+    type: PairedImageDataset
+    dataroot_gt: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test20/M3FD_Fusion_test20/lr/HR
+    dataroot_lq: /mnt/vc-nfs/sshan/IR_dataset/M3FD/test20/M3FD_Fusion_test20/lr/LR_bicubic/X2
+    filename_tmpl: '{}x2'
+    io_backend:
+      type: disk
+
+# network structures
+network_t: 
+    type: LISNModel
+    img_size: 64
+    num_heads: 8
+    upscale: 2
+    window_size: 8
+    num_in_ch: 3
+    nf: 64
+    embed_dim: 64
+    depth: 6
+    upsampler: "pixelshuffledirect"         #// "pixelshuffle" | "convtranspose" | "upconv"
+    img_range: 1.
+
+network_g: 
+    type: LISNModel
+    img_size: 64
+    num_heads: 8
+    upscale: 2
+    window_size: 8
+    num_in_ch: 3
+    nf: 64
+    embed_dim: 64
+    depth: 4
+    upsampler: "pixelshuffledirect"         #// "pixelshuffle" | "convtranspose" | "upconv"
+    img_range: 1.
+
+network_his: true
+
+network_vqgan:
+  type: VQGAN
+  embed_dim: 256
+  n_embed: 1024
+  ddconfig:
+    in_channels: 3
+    out_ch: 3
+    resolution: 256
+    ch: 128
+    ch_mult: [1, 1, 2, 2, 4]
+    num_res_blocks: 2
+    attn_resolutions: [16]
+    dropout: 0.0
+    double_z: false
+    z_channels: 256
+
+# path
+path:
+  pretrain_network_t: /home/sshan/project/experiment/DCKD/experiments/final_models/LISN_SRx2_M3FD_250k_B16G4/models/net_g_25000.pth
+  strict_load_t: true
+  param_key_t: params_ema
+
+  pretrain_network_g: ~
+  strict_load_g: true
+  param_key_g: params_ema
+
+  pretrain_network_vqgan: /home/sshan/project/experiment/DCKD/checkpoints/last.ckpt
+  strict_load_vqgan: false
+  param_key_vqgan: state_dict
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    #periods: [10000, 10000, 10000, 10000]
+    #restarts: [1, 0.5, 0.5, 0.5]
+    milestones: [10000,20000,0000,40000,50000]
+    gamma: 0.5
+
+  total_iter: 50000
+  warmup_iter: -1  # no warm up
+
+# losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: sum
+
+  sobel_opt:
+    type: SobelLoss
+    loss_type: l1
+    loss_weight: 2.0
+
+  spectral_opt:
+    type: SpectralLoss
+    loss_weight: 2.0
+
+  cl_opt:
+    type: ContrasLoss
+    d_func: L1
+    loss_weight: 1.0
+    weights: [0.03125, 0.0625, 0.125, 0.25, 1.0]
+  num_neg: 4
+  update_decay: 0.1
+  step: [1000, 2000, 3000]
+
+  gaussian_blur_prob: 0.5
+  resize_prob: 0
+  gaussian_noise_prob: 1.0
+  gray_noise_prob: 0.5
+
+  ce_opt:
+    type: CELoss
+    loss_weight: 0.005
+    reduction: sum
+
+# validation settings
+val:
+  val_freq: !!float 5e3
+  save_img: false
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 2
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 2
+      test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

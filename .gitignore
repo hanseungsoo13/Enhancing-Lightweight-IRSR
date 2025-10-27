@@ -1,0 +1,9 @@
+experiments
+results
+.eggs
+basicsr.egg-info
+tb_logger
+*/*/__pycache__
+clip_model
+*.pth
+checkpoints
