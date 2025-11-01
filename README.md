@@ -1,32 +1,31 @@
-# Dynamic Contrastive Knowledge Distillation for Efficient Image Restoration
+# Enhancing Lightweight IRSR Models via Knowledge Distillation with Structural and Spectral Losses
 <div>
-    Yunshuai Zhou<sup>1,*</sup>&emsp;
-    Junbo Qiao<sup>1,*</sup>&emsp;
-    Jincheng Liao<sup>1</sup>&emsp;
-    Wei Li<sup>2</sup>&emsp;
-    Simiao Li<sup>2</sup>&emsp;
-    Jiao Xie<sup>1</sup>&emsp;
-    Yunhang Shen<sup>3</sup>&emsp;
-    Jie Hu<sup>2</sup>&emsp;
-    Shaohui Lin<sup>1,4,†</sup>
+    Seungsoo Han<sup>1,*</sup>&emsp;
+    Dongnyeok Choi<sup>1,*</sup>&emsp;
+    Deukhwa Kim<sup>1</sup>&emsp;
+    Jeonghun Kim<sup>1</sup>&emsp;
+    Seunghoon Shin<sup>1</sup>&emsp;
 </div>
 <div>
-    <sup>1</sup>East China Normal University, <sup>2</sup>Huawei Noah’s Ark Lab, <sup>3</sup>Xiamen University,<br/>
-    <sup>4</sup>Key Laboratory of Advanced Theory and Application in Statistics and Data Science- MOE
+    <sup>1</sup>Funzin Co.LTD.
 </div>
 
-[[Paper]](https://arxiv.org/abs/2412.08939)
+[[Paper]](https://ictc.org/program_proceeding)
+
+The code is based on [DCKD](https://github.com/super-SSS/DCKD)
 
 > **Abstract:** 
-Knowledge distillation (KD) is a valuable yet challenging approach that enhances a compact student network by learning from a high-performance but cumbersome teacher model. However, previous KD methods for image restoration overlook the state of the student during the distillation, adopting a fixed solution space that limits the capability of KD. Additionally, relying solely on L1-type loss struggles to leverage the distribution information of images. In this work, we propose a novel dynamic contrastive knowledge distillation~(DCKD) framework for image restoration. Specifically, we introduce dynamic contrastive regularization to perceive the student's learning state and dynamically adjust the distilled solution space using contrastive learning. Additionally, we also propose a distribution mapping module to extract and align the pixel-level category distribution of the teacher and student models. Note that the proposed DCKD is a structure-agnostic distillation framework, which can adapt to different backbones and can be combined with methods that optimize upper-bound constraints to further enhance model performance. Extensive experiments demonstrate that DCKD significantly outperforms the state-of-the-art KD methods across various image restoration tasks and backbones.
+For Infrared Image Super-Resolution (IRSR) technology, maintaining performance while reducing model complexity is critical for a wide range of applications. However, existing research on lightweight IRSR has been predominantly limited to modifying model architectures. This study proposes a new methodology that applies Knowledge Distillation, a representative model compression technique from supervised learning, to IRSR models. To this end, we extend the DCKD framework, previously used for RGB image super-resolution, to the IRSR domain and introduce new loss functions designed to maximize the preservation of key structural characteristics in infrared images, namely edge and spectral(Contourlet-domain) information. Through the proposed methodology, a lightweight student model trained with distilled knowledge from a high-performance, complex teacher model consistently achieved superior performance compared to the same architecture trained via standard supervised learning. This study demonstrates that Knowledge Distillation based methodology is effective for developing lightweight IRSR models and is expected to contribute to fields where high-efficiency IRSR is essential, such as real-time military surveillance, disaster response, and nocturnal reconnaissance.
 
 ![DCKD](DCKD.png)
 
 ## News
 
-- [2025.01] Training codes is released.
-- [2024.12] 💥💥💥Congratulations, DCKD has been applied to the Huawei Mate70 and Mate X6 series!
-- [2024.12] 🚩Accepted by AAAI2025.
+- [2025.11] Training codes is released.
+- [2025.09] 🚩Accepted by ICTC2025.
+
+---
+# DCKD
 
 ## Preparation
 
