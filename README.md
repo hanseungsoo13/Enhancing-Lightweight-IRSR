@@ -1,7 +1,7 @@
 # Enhancing Lightweight IRSR Models via Knowledge Distillation with Structural and Spectral Losses
 <div>
     Seungsoo Han<sup>1,*</sup>&emsp;
-    Dongnyeok Choi<sup>1,*</sup>&emsp;
+    Dongnyeok Choi<sup>1,</sup>&emsp;
     Deukhwa Kim<sup>1</sup>&emsp;
     Jeonghun Kim<sup>1</sup>&emsp;
     Seunghoon Shin<sup>1</sup>&emsp;
