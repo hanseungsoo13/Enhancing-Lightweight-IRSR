@@ -10,7 +10,7 @@
     <sup>1</sup>Funzin Co.LTD.
 </div>
 
-[[Paper]](https://ictc.org/program_proceeding)
+[[Paper]]([https://ictc.org/program_proceeding](https://ictc.org/program_proceeding#:~:text=Enhancing%20Lightweight%20IRSR%20Models%20via%20Knowledge%20Distillation%20with%20Structural%20and%20Spectral%20Losses))
 
 The code is based on [DCKD](https://github.com/super-SSS/DCKD)
 
