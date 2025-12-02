@@ -10,7 +10,8 @@
     <sup>1</sup>Funzin Co.LTD.
 </div>
 
-[Paper]([https://ictc.org/program_proceeding)
+
+[Paper](https://ictc.org/program_proceeding)
 
 The code is based on [DCKD](https://github.com/super-SSS/DCKD)
 
